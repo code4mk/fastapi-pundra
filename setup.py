@@ -26,7 +26,7 @@ if sys.argv[-1] == 'publish':
     print("  git push --tags")
     shutil.rmtree('dist')
     shutil.rmtree('build')
-    shutil.rmtree('py_socialite.egg-info')
+    shutil.rmtree('fastapi_pundra.egg-info')
     sys.exit()
     
 def read(f):
@@ -60,13 +60,10 @@ setup(
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
-        'Framework :: Django',
-        'Framework :: Django :: 3.2',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
+        'Framework :: FastAPI',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
         'Operating System :: OS Independent',
     ],
     project_urls={

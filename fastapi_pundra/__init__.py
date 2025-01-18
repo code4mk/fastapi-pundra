@@ -1,5 +1,5 @@
 __title__ = 'FastAPI Pundra'
-__version__ = '0.0.1'
+__version__ = '0.0.5'
 __author__ = 'Mostafa'
 
 # Version synonym

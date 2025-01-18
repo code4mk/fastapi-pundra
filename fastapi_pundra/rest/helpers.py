@@ -1,6 +1,19 @@
 from fastapi import Request
 from typing import Dict
 from sqlalchemy import desc
+import os
+from pathlib import Path
+
+
+def app_path(path_name = None):
+    # First try to get path from environment variable
+    base_path = os.getenv('APP_BASE_PATH', 'app')
+    lib_base_path = str(Path(__file__).parent.parent.parent.parent)
+    
+    if path_name:
+        return os.path.join(lib_base_path, base_path, path_name)
+    else:
+        return os.path.join(lib_base_path, base_path)
 
 async def the_query(request: Request, name = None) -> Dict[str, str]:
     data = {}
