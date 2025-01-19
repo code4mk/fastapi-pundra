@@ -1,5 +1,6 @@
 from fastapi import Request
 from urllib.parse import urlparse
+import os
   
 def paginate(request: Request, query, serilizer, the_page: int = 1, the_per_page: int = 10, wrap='data', additional_data=None):
     """Paginate the query.
@@ -45,6 +46,7 @@ def paginate(request: Request, query, serilizer, the_page: int = 1, the_per_page
         'next_page_url': next_page_url,
         'prev_page_url': prev_page_url,
         'path': base_url,
+        'kamal': os.getcwd(),
         'from': offset + 1 if data else None,
         'to': offset + len(data) if data else None,
         wrap: data
