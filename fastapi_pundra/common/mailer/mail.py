@@ -1,3 +1,4 @@
+from fastapi import BackgroundTasks
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from dotenv import load_dotenv
 from .mail_templating import EmailTemplates
@@ -29,13 +30,11 @@ def render_mail_template(template_name: str, context: dict = {}):
     # Render the specified template with the given context
     return templates.render_template(template_name, context)
 
-async def send_mail(subject, to, template_name, context=None):
+async def send_mail_util(subject: str, to: List[str], template_name: str, context: dict = None):
     try:
-        # Cast 'to' parameter to a list
         if not isinstance(to, list):
-            to = [to]  # Convert to list
-        
-        # Prepare the email message
+            to = [to]
+            
         message = MessageSchema(
             subject=subject,
             recipients=to,
@@ -43,10 +42,17 @@ async def send_mail(subject, to, template_name, context=None):
             subtype="html"
         )
         
-        # Send the email
         fm = FastMail(conf)
         await fm.send_message(message)
-        
         return "Email has been sent"
     except Exception as e:
+        print(f"Failed to send email: {str(e)}")
         return f'An error occurred while sending the email: {str(e)}'
+
+async def send_mail_background(background_tasks: BackgroundTasks, subject: str, to: List[str], template_name: str, context: dict = None):
+    background_tasks.add_task(send_mail_util, subject, to, template_name, context)
+    return "Email scheduled for sending"
+
+async def send_mail(subject: str, to: List[str], template_name: str, context: dict = None):
+    return await send_mail_util(subject, to, template_name, context)
+
