@@ -43,8 +43,8 @@ setup(
     description='Pundra: Your FastAPI Companion for Productivity',
     long_description=read('README.md'),
     long_description_content_type='text/markdown',
-    keywords=['python', 'fastapi', 'code4mk'],
-    
+    keywords=['python', 'fastapi', 'rest_api', 'pundra', 'strawberry', 'graphql', 'code4mk'],
+    license='MIT',
     # Package configuration
     packages=find_packages(exclude=['tests*']),
     python_requires='>=3.6',
