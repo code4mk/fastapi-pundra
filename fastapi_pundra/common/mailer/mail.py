@@ -30,7 +30,7 @@ def render_mail_template(template_name: str, context: dict = {}):
     # Render the specified template with the given context
     return templates.render_template(template_name, context)
 
-async def send_mail_util(subject: str, to: List[str], template_name: str, context: dict = None):
+async def send_mail_util(subject: str, to: List[str], template_name: str, context: dict = None, cc: List[str] | str = None, bcc: List[str] | str = None, reply_to: List[str] | str = None):
     try:
         if not isinstance(to, list):
             to = [to]
@@ -49,10 +49,10 @@ async def send_mail_util(subject: str, to: List[str], template_name: str, contex
         print(f"Failed to send email: {str(e)}")
         return f'An error occurred while sending the email: {str(e)}'
 
-async def send_mail_background(background_tasks: BackgroundTasks, subject: str, to: List[str], template_name: str, context: dict = None):
-    background_tasks.add_task(send_mail_util, subject, to, template_name, context)
+async def send_mail_background(background_tasks: BackgroundTasks, subject: str, to: List[str], template_name: str, context: dict = None, cc: List[str] | str = None, bcc: List[str] | str = None, reply_to: List[str] | str = None):
+    background_tasks.add_task(send_mail_util, subject, to, template_name, context, cc, bcc, reply_to)
     return "Email scheduled for sending"
 
-async def send_mail(subject: str, to: List[str], template_name: str, context: dict = None):
-    return await send_mail_util(subject, to, template_name, context)
+async def send_mail(subject: str, to: List[str], template_name: str, context: dict = None, cc: List[str] | str = None, bcc: List[str] | str = None, reply_to: List[str] | str = None):
+    return await send_mail_util(subject, to, template_name, context, cc, bcc, reply_to)
 
