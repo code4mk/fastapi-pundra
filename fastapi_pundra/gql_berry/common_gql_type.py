@@ -14,3 +14,4 @@ class PaginatedList(Generic[T]):
     last_page: int
     from_item: Optional[int]
     to_item: Optional[int]
+    additional_data: Optional[strawberry.scalars.JSON]
