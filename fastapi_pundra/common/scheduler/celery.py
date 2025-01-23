@@ -1,17 +1,19 @@
 from __future__ import absolute_import, unicode_literals
 import os
-from typing import List
 from celery import Celery
 from fastapi_pundra.common.scheduler.schedule import bind_beat_schedule
-from app.config.scheduler import schedules
+from importlib import import_module
 from dotenv import load_dotenv
 
 load_dotenv()
 
-def create_celery_app(project_name: str, task_modules: List[str] | str = [], broker_type: str = 'redis'):
-  # Convert task_modules to list if it's a string
-  if isinstance(task_modules, str):
-    task_modules = [task_modules]
+def create_celery_app(project_name: str, broker_type: str = 'redis'):
+  # Get project base path from environment
+  project_base_path = os.getenv('PROJECT_BASE_PATH', 'app')
+  
+  # Dynamically import schedules based on PROJECT_BASE_PATH
+  schedules_module = import_module(f'{project_base_path}.config.scheduler')
+  schedules = schedules_module.schedules
 
   app = Celery(project_name)
   app.conf.update(
@@ -25,9 +27,18 @@ def create_celery_app(project_name: str, task_modules: List[str] | str = [], bro
     app.conf.beat_scheduler = 'redbeat.RedBeatScheduler'
     app.conf.redbeat_redis_url = os.getenv('CELERY_BROKER_URL')
 
-  # Combine default task modules with provided task modules
-  default_task_modules = ['fastapi_pundra.common.mailer.task']
-  all_task_modules = default_task_modules + task_modules
+  # Define default task modules that should always be included
+  default_task_modules = [
+    'fastapi_pundra.common.mailer.task'
+  ]
+  
+  # Define project-specific task modules
+  project_task_modules = [
+    f"{project_base_path}.tasks"
+  ]
+  
+  # Combine all task modules
+  all_task_modules = project_task_modules + default_task_modules
   app.autodiscover_tasks(all_task_modules)
 
   app.conf.beat_schedule = bind_beat_schedule(schedules=schedules) 

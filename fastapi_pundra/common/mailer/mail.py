@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 from .mail_templating import EmailTemplates
 from fastapi_pundra.common.helpers import base_path
 import os
-from pydantic import EmailStr, BaseModel
 from typing import List
 
 # Load environment variables from .env file
@@ -25,7 +24,9 @@ conf = ConnectionConfig(
 
 def render_mail_template(template_name: str, context: dict = {}):
     # Initialize EmailTemplates with the correct directory
-    template_dir = os.path.join(base_path(), 'app', 'templates', 'mails')
+    project_base_path = os.getenv('PROJECT_BASE_PATH', 'app')
+
+    template_dir = os.path.join(base_path(), project_base_path, 'templates', 'mails')
     templates = EmailTemplates(directory=template_dir)
     # Render the specified template with the given context
     return templates.render_template(template_name, context)

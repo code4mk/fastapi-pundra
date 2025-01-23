@@ -2,6 +2,9 @@ import os
 from bs4 import BeautifulSoup
 from premailer import Premailer
 from fastapi_pundra.common.helpers import base_path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def inline_css(html_code):
     # Parse the HTML code
@@ -13,8 +16,10 @@ def inline_css(html_code):
     # Extract the href attribute values
     css_files = [link['href'] for link in link_tags]
 
+    project_base_path = os.getenv('PROJECT_BASE_PATH', 'app')
+
     # Read the content of each CSS file and include it in the HTML
-    mail_template_dir = os.path.join(base_path(), 'app', 'templates', 'mails')
+    mail_template_dir = os.path.join(base_path(), project_base_path, 'templates', 'mails')
     for css_file in css_files:
         css_file_path = os.path.join(mail_template_dir, css_file)
         # Check if the file exists
