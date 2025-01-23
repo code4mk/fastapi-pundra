@@ -1,4 +1,3 @@
-
 def paginate(query, page: int = 1, per_page: int = 10, additional_data: dict = None):
     total = query.count()
     last_page = (total + per_page - 1) // per_page
@@ -17,14 +16,16 @@ def paginate(query, page: int = 1, per_page: int = 10, additional_data: dict = N
 
     output = {
         "data": data,
-        "total": total,
-        "current_page": page,
-        "next_page": next_page,
-        "prev_page": prev_page,
-        "per_page": per_page,
-        "last_page": last_page,
-        "from_item": offset + 1 if data else None,
-        "to_item": offset + len(data) if data else None
+        "pagination": {
+            "total": total,
+            "current_page": page,
+            "next_page": next_page,
+            "prev_page": prev_page,
+            "per_page": per_page,
+            "last_page": last_page,
+            "from_item": offset + 1 if data else None,
+            "to_item": offset + len(data) if data else None
+        }
     }
 
     if additional_data:
@@ -32,7 +33,6 @@ def paginate(query, page: int = 1, per_page: int = 10, additional_data: dict = N
             output['additional_data'] = additional_data(data)
         else:
             output['additional_data'] = additional_data
-
 
     return output
     

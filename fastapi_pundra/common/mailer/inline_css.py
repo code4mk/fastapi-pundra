@@ -1,8 +1,6 @@
-
 import os
 from bs4 import BeautifulSoup
 from premailer import Premailer
-from app.utils.base import app_path
 from fastapi_pundra.common.helpers import base_path
 
 def inline_css(html_code):
