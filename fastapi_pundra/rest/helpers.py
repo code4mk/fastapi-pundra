@@ -1,23 +1,22 @@
 from fastapi import Request
-from typing import Dict
 from sqlalchemy import desc
 
-async def the_query(request: Request, name = None) -> Dict[str, str]:
+async def the_query(request: Request, name: str | None = None) -> dict[str, str] | str | None:
+    """Get the query parameters from the request."""
     data = {}
-    
+
     if request.query_params:
         data =  request.query_params
     elif request.headers.get("Content-Type") == "application/json":
         data = await request.json()
     else:
         data = await request.form()
-    
+
     if name:
-      return data.get(name)
-    else:
-      return data
-    
-def the_sorting(request, query):
+        return data.get(name)
+    return data
+
+def the_sorting(request: Request, query):
     """Sort a SQLAlchemy query based on query parameters.
     
     Example:

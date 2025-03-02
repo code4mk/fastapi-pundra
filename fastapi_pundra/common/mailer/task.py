@@ -3,7 +3,7 @@ from typing import List
 import asyncio
 from .mail import send_mail
 
-@shared_task(name="send_email_queue_task")
+@shared_task(name="pundra_send_email_queue_task")
 def send_email_queue_task(subject: str, to: List[str], template_name: str, context: dict, cc: List[str] | str = None, bcc: List[str] | str = None, reply_to: List[str] | str = None):
     # Create and run the event loop
     loop = asyncio.new_event_loop()
