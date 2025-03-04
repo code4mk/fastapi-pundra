@@ -44,15 +44,23 @@ async def send_mail_util(subject: str, to: List[str], template_name: str, contex
         if reply_to and not isinstance(reply_to, list):
             reply_to = [reply_to]
             
-        message = MessageSchema(
-            subject=subject,
-            recipients=to,
-            cc=cc,
-            bcc=bcc,
-            reply_to=reply_to,
-            body=render_mail_template(template_name=template_name, context=context),
-            subtype="html"
-        )
+        # Create message kwargs with required fields
+        message_kwargs = {
+            "subject": subject,
+            "recipients": to,
+            "body": render_mail_template(template_name=template_name, context=context),
+            "subtype": "html"
+        }
+        
+        # Only add optional fields if they have values
+        if cc:
+            message_kwargs["cc"] = cc
+        if bcc:
+            message_kwargs["bcc"] = bcc
+        if reply_to:
+            message_kwargs["reply_to"] = reply_to
+            
+        message = MessageSchema(**message_kwargs)
         
         fm = FastMail(conf)
         await fm.send_message(message)
