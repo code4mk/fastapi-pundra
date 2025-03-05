@@ -11,16 +11,18 @@ load_dotenv()
 
 
 # Configure email connection
-conf = ConnectionConfig(
-    MAIL_USERNAME=os.getenv('MAIL_USERNAME', 'default_username'),
-    MAIL_PASSWORD=os.getenv('MAIL_PASSWORD', 'default_password'),
-    MAIL_FROM=os.getenv('MAIL_FROM_ADDRESS', 'noreply@example.com'),  # Default sender address
-    MAIL_PORT=int(os.getenv('MAIL_PORT', '587')),  # Default to common SMTP port
-    MAIL_SERVER=os.getenv('MAIL_HOST', 'smtp.gmail.com'),  # Default to Gmail SMTP server
-    MAIL_STARTTLS=False,  # or False based on your configuration
-    MAIL_SSL_TLS=False,   # or False based on your configuration
-    USE_CREDENTIALS=True
-)
+def mail_config():
+    conf = ConnectionConfig(
+        MAIL_USERNAME=os.getenv('MAIL_USERNAME', 'default_username'),
+        MAIL_PASSWORD=os.getenv('MAIL_PASSWORD', 'default_password'),
+        MAIL_FROM=os.getenv('MAIL_FROM_ADDRESS', 'noreply@example.com'),  # Default sender address
+        MAIL_PORT=int(os.getenv('MAIL_PORT', '587')),  # Default to common SMTP port
+        MAIL_SERVER=os.getenv('MAIL_HOST', 'smtp.gmail.com'),  # Default to Gmail SMTP server
+        MAIL_STARTTLS=False,  # or False based on your configuration
+        MAIL_SSL_TLS=False,   # or False based on your configuration
+        USE_CREDENTIALS=True
+    )
+    return conf
 
 def render_mail_template(template_name: str, context: dict = {}):
     # Initialize EmailTemplates with the correct directory
@@ -61,8 +63,9 @@ async def send_mail_util(subject: str, to: List[str], template_name: str, contex
             message_kwargs["reply_to"] = reply_to
             
         message = MessageSchema(**message_kwargs)
+        the_mail_config = mail_config()
         
-        fm = FastMail(conf)
+        fm = FastMail(the_mail_config)
         await fm.send_message(message)
         return "Email has been sent"
     except Exception as e:
