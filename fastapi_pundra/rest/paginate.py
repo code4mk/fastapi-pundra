@@ -29,11 +29,21 @@ def paginate(request: Request, query, serilizer, the_page: int = 1, the_per_page
     full_path = str(request.url)
     parsed_url = urlparse(full_path)
     path_without_query = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}"
+    
+    # Get all existing query parameters
+    query_params = dict(request.query_params)
+    
+    def build_url(page_num):
+        params = query_params.copy()
+        params['page'] = str(page_num)
+        params['per_page'] = str(per_page)
+        query_string = '&'.join(f"{k}={v}" for k, v in params.items())
+        return f"{path_without_query}?{query_string}"
 
-    first_page_url = f"{path_without_query}?page=1&per_page={per_page}"
-    last_page_url = f"{path_without_query}?page={last_page}&per_page={per_page}"
-    next_page_url = f"{path_without_query}?page={page + 1}&per_page={per_page}" if page < last_page else None
-    prev_page_url = f"{path_without_query}?page={page - 1}&per_page={per_page}" if page > 1 else None
+    first_page_url = build_url(1)
+    last_page_url = build_url(last_page)
+    next_page_url = build_url(page + 1) if page < last_page else None
+    prev_page_url = build_url(page - 1) if page > 1 else None
 
     output = {
         "total": total,
