@@ -9,6 +9,8 @@ from typing import List
 # Load environment variables from .env file
 load_dotenv()
 
+def str_to_bool(value):
+    return value.lower() in ("true", "1", "yes")
 
 # Configure email connection
 def mail_config():
@@ -16,11 +18,11 @@ def mail_config():
         MAIL_USERNAME=os.getenv('MAIL_USERNAME', 'default_username'),
         MAIL_PASSWORD=os.getenv('MAIL_PASSWORD', 'default_password'),
         MAIL_FROM=os.getenv('MAIL_FROM_ADDRESS', 'noreply@example.com'),  # Default sender address
-        MAIL_PORT=int(os.getenv('MAIL_PORT', '587')),  # Default to common SMTP port
+        MAIL_PORT=int(os.getenv('MAIL_PORT', '465')),  # Changed to 465 for SSL
         MAIL_SERVER=os.getenv('MAIL_HOST', 'smtp.gmail.com'),  # Default to Gmail SMTP server
-        MAIL_STARTTLS=False,  # or False based on your configuration
-        MAIL_SSL_TLS=False,   # or False based on your configuration
-        USE_CREDENTIALS=True
+        MAIL_STARTTLS=str_to_bool(os.getenv('MAIL_STARTTLS', 'False')),  # Changed to False since we're using SSL/TLS
+        MAIL_SSL_TLS=str_to_bool(os.getenv('MAIL_SSL_TLS', 'True')),    # Changed to True for Gmail's secure connection
+        USE_CREDENTIALS=str_to_bool(os.getenv('MAIL_USE_CREDENTIALS', 'True'))
     )
     return conf
 
