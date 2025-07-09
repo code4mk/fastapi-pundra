@@ -16,14 +16,14 @@ async def the_query(request: Request, name: str | None = None) -> dict[str, str]
         return data.get(name)
     return data
 
-def the_sorting(request: Request, query):
+def the_sorting(request: Request, query, default_sort=""):
     """Sort a SQLAlchemy query based on query parameters.
     
     Example:
         # For a request with URL: /api/items?sort=name,-created_at
         # This will sort by name (ascending) and created_at (descending)
     """
-    sort_params = request.query_params.get("sort")
+    sort_params = request.query_params.get("sort") or default_sort
     
     if sort_params:
         sort_fields = sort_params.split(",")
