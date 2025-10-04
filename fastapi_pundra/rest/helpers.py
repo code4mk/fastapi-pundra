@@ -1,5 +1,6 @@
 from fastapi import Request
 from sqlalchemy import desc
+from pydantic import BaseModel
 
 async def the_query(request: Request, name: str | None = None) -> dict[str, str] | str | None:
     """Get the query parameters from the request."""
@@ -47,3 +48,7 @@ def the_sorting(request: Request, query, default_sort=""):
             query = query.order_by(*ordering)
         
     return query
+
+def get_serialize_data(schema: BaseModel, data: dict) -> dict:
+    """Get the serialized data."""
+    return schema.model_validate(data).model_dump()

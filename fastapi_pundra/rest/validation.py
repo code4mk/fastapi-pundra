@@ -5,12 +5,14 @@ from fastapi_pundra.rest.helpers import the_query
 from fastapi_pundra.rest.exceptions import ValidationException, BadRequestException
 
 def dto(schema: BaseModel):
+    """ Decorator to validate the request data."""
     def decorator(func):
         @wraps(func)
         async def wrapper(request: Request, background_tasks: BackgroundTasks = None, *args, **kwargs):
+            """ Wrapper to validate the request data."""
             try:
                 request_data = await the_query(request)
-                validated_data = schema(**request_data)
+                validated_data = schema.model_validate(request_data)
                 request.state.validated_data = validated_data
                 if background_tasks is not None:
                     return await func(request, background_tasks, *args, **kwargs)
