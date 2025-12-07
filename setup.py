@@ -53,6 +53,8 @@ setup(
     install_requires=[
         "requests",
         "python-dotenv",
+        "python-jose",
+        "bcrypt"
     ],
 
     # Classifiers
