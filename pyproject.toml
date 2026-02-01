@@ -63,6 +63,8 @@ exclude = [
     "/.github",
     "/tests",
     "/.gitignore",
+    "/.env",
+    "/publish.sh",
 ]
 
 [tool.ruff]
