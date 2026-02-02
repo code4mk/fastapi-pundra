@@ -29,6 +29,7 @@ FastAPI Pundra is a comprehensive toolkit that extends FastAPI with essential ut
 - **Dynamic Task Discovery**: Automatic task module discovery
 
 ### 🌐 REST API Enhancements
+- **Auto Router Registration**: Automatic discovery and binding of FastAPI routers
 - **Exception Handling**: Comprehensive exception classes for different HTTP status codes
 - **Global Exception Handler**: Centralized error handling for your FastAPI app
 - **Pagination**: Built-in pagination with URL generation
@@ -123,6 +124,47 @@ async def get_users(request: Request):
     )
 ```
 
+### Auto Router Registration
+
+Automatically discover and register all routers in your API package without manual imports:
+
+```python
+from fastapi import APIRouter
+from fastapi_pundra.rest import auto_bind_router
+
+router = APIRouter()
+
+# Auto-discover and bind all routers from your API package
+# This will discover:
+# - Root level modules (health.py, users.py, etc.)
+# - Versioned subdirectories (v1/, v2/, etc.) with automatic prefix
+auto_bind_router(router, "app.api")
+```
+
+**Project Structure Example:**
+
+```
+app/
+└── api/
+    ├── router.py          # Main router with auto_bind_router
+    ├── health.py          # → Routes: /health/*
+    ├── root.py            # → Routes: /*
+    └── v1/
+        ├── users.py       # → Routes: /v1/users/*
+        └── posts.py       # → Routes: /v1/posts/*
+```
+
+**Configuration Options:**
+
+```python
+auto_bind_router(
+    router=router,                    # Required: Your APIRouter instance
+    api_package_path="app.api",       # Required: Package path to scan
+    skip_files=["__init__.py", "router.py"],  # Optional: Files to skip
+    discover_versioned=True,          # Optional: Scan versioned folders (v1/, v2/)
+)
+```
+
 ### Celery Task Scheduling
 
 ```python
@@ -200,6 +242,7 @@ fastapi-pundra/
 │   ├── raw_sql/           # Raw SQL utilities
 │   └── scheduler/         # Task scheduling
 ├── rest/                  # REST API utilities
+│   ├── route_register.py  # Auto router registration
 │   ├── exceptions.py      # Exception classes
 │   ├── paginate.py        # Pagination
 │   └── ...

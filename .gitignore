@@ -51,11 +51,12 @@ Pipfile.lock
 .vscode/
 
 # Additional Python virtual environments
-.python-version  # pyenv
+# .python-version  # Keep this file for uv/pyenv
 .venv/
 env/
 ENV/
 pythonenv*
+.uv/
 
 # Additional IDE/Editor files
 *.swp           # Vim swap files
