@@ -56,7 +56,7 @@ Documentation = "https://github.com/code4mk/fastapi-pundra"
 "Bug Tracker" = "https://github.com/code4mk/fastapi-pundra/issues"
 
 [tool.hatch.build.targets.wheel]
-packages = ["fastapi_pundra"]
+packages = ["src/fastapi_pundra"]
 
 [tool.hatch.build.targets.sdist]
 exclude = [

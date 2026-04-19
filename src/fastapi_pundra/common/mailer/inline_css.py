@@ -2,9 +2,6 @@ import os
 from bs4 import BeautifulSoup
 from premailer import Premailer
 from fastapi_pundra.common.helpers import base_path
-from dotenv import load_dotenv
-
-load_dotenv()
 
 def inline_css(html_code):
     # Parse the HTML code
