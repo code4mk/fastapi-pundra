@@ -86,7 +86,6 @@ requirements.txt.lock
 
 # Documentation
 docs/_build/
-_docs/
 /site
 
 # Logs and databases

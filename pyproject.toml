@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "fastapi-pundra"
-version = "0.0.22"
+version = "0.0.23"
 description = "Pundra: Your FastAPI Companion for Productivity"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -65,6 +65,7 @@ exclude = [
     "/.gitignore",
     "/.env",
     "/publish.sh",
+    "/_docs",
 ]
 
 [tool.ruff]
