@@ -1,13 +1,15 @@
+import warnings
 from fastapi import Request
 from sqlalchemy import desc
 from pydantic import BaseModel
 
-async def the_query(request: Request, name: str | None = None) -> dict[str, str] | str | None:
-    """Get the query parameters from the request."""
+
+async def extract_request_data(request: Request, name: str | None = None) -> dict[str, str] | str | None:
+    """Extract data from the request (query params, JSON body, or form data)."""
     data = {}
 
     if request.query_params:
-        data =  request.query_params
+        data = request.query_params
     elif request.headers.get("Content-Type") == "application/json":
         data = await request.json()
     else:
@@ -17,37 +19,64 @@ async def the_query(request: Request, name: str | None = None) -> dict[str, str]
         return data.get(name)
     return data
 
-def the_sorting(request: Request, query, default_sort=""):
-    """Sort a SQLAlchemy query based on query parameters.
-    
+
+def apply_query_sorting(request: Request, query, default_sort=""):
+    """Sort a SQLAlchemy query based on request sort query parameters.
+
     Example:
         # For a request with URL: /api/items?sort=name,-created_at
         # This will sort by name (ascending) and created_at (descending)
     """
     sort_params = request.query_params.get("sort") or default_sort
-    
+
     if sort_params:
         sort_fields = sort_params.split(",")
         ordering = []
         model_class = query.column_descriptions[0]['entity']
-        
-        # Get all valid column names from the model
         valid_columns = model_class.__table__.columns.keys()
 
         for field in sort_fields:
             field_name = field[1:] if field.startswith("-") else field
-            
-            # Check if the field exists in the model
+
             if field_name in valid_columns:
                 if field.startswith("-"):
                     ordering.append(desc(getattr(model_class, field_name)))
                 else:
                     ordering.append(getattr(model_class, field_name))
-                
+
         if ordering:
             query = query.order_by(*ordering)
-        
+
     return query
+
+
+async def the_query(request: Request, name: str | None = None) -> dict[str, str] | str | None:
+    """Get the query parameters from the request.
+
+    .. deprecated::
+        Use :func:`extract_request_data` instead.
+    """
+    warnings.warn(
+        "the_query is deprecated, use extract_request_data instead",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return await extract_request_data(request, name)
+
+
+def the_sorting(request: Request, query, default_sort=""):
+    """Sort a SQLAlchemy query based on query parameters.
+
+    .. deprecated::
+        Use :func:`apply_query_sorting` instead.
+    """
+    warnings.warn(
+        "the_sorting is deprecated, use apply_query_sorting instead",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return apply_query_sorting(request, query, default_sort)
+
 
 def get_serialize_data(schema: BaseModel, data: dict) -> dict:
     """Get the serialized data."""

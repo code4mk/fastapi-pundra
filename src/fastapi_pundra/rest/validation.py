@@ -1,7 +1,7 @@
 from fastapi import Request, BackgroundTasks
 from pydantic import BaseModel, ValidationError
 from functools import wraps
-from fastapi_pundra.rest.helpers import the_query
+from fastapi_pundra.rest.helpers import extract_request_data
 from fastapi_pundra.rest.exceptions import ValidationException, BadRequestException
 
 def dto(schema: BaseModel):
@@ -11,7 +11,7 @@ def dto(schema: BaseModel):
         async def wrapper(request: Request, background_tasks: BackgroundTasks = None, *args, **kwargs):
             """ Wrapper to validate the request data."""
             try:
-                request_data = await the_query(request)
+                request_data = await extract_request_data(request)
                 validated_data = schema.model_validate(request_data)
                 request.state.validated_data = validated_data
                 if background_tasks is not None:
