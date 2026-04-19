@@ -1,11 +1,12 @@
 from typing import Any, Dict, Optional
+from fastapi import status
 
 class BaseAPIException(Exception):
     """Base exception for all API exceptions"""
     def __init__(
         self,
         message: str = "An error occurred",
-        status_code: int = 500,
+        status_code: int = status.HTTP_500_INTERNAL_SERVER_ERROR,
         errors: Optional[Dict[str, Any]] = None
     ):
         self.message = message
@@ -27,7 +28,7 @@ class ValidationException(BaseAPIException):
     def __init__(self, errors: Dict[str, Any]):
         super().__init__(
             message="Validation error",
-            status_code=422,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             errors=errors
         )
 
@@ -36,7 +37,7 @@ class NotFoundException(BaseAPIException):
     def __init__(self, message: str = "Resource not found"):
         super().__init__(
             message=message,
-            status_code=404
+            status_code=status.HTTP_404_NOT_FOUND
         )
 
 class ItemNotFoundException(BaseAPIException):
@@ -44,7 +45,7 @@ class ItemNotFoundException(BaseAPIException):
     def __init__(self, message: str = "Item not found"):
         super().__init__(
             message=message,
-            status_code=404
+            status_code=status.HTTP_404_NOT_FOUND
         )
 
 class UnauthorizedException(BaseAPIException):
@@ -52,7 +53,7 @@ class UnauthorizedException(BaseAPIException):
     def __init__(self, message: str = "Unauthorized access"):
         super().__init__(
             message=message,
-            status_code=401
+            status_code=status.HTTP_401_UNAUTHORIZED
         )
 
 class ForbiddenException(BaseAPIException):
@@ -60,7 +61,7 @@ class ForbiddenException(BaseAPIException):
     def __init__(self, message: str = "Forbidden access"):
         super().__init__(
             message=message,
-            status_code=403
+            status_code=status.HTTP_403_FORBIDDEN
         )
 
 class BadRequestException(BaseAPIException):
@@ -68,7 +69,7 @@ class BadRequestException(BaseAPIException):
     def __init__(self, message: str = "Bad request", errors: Optional[Dict[str, Any]] = None):
         super().__init__(
             message=message,
-            status_code=400,
+            status_code=status.HTTP_400_BAD_REQUEST,
             errors=errors
         )
 
@@ -77,7 +78,7 @@ class ConflictException(BaseAPIException):
     def __init__(self, message: str = "Resource conflict"):
         super().__init__(
             message=message,
-            status_code=409
+            status_code=status.HTTP_409_CONFLICT
         )
 
 class MethodNotAllowedException(BaseAPIException):
@@ -85,5 +86,5 @@ class MethodNotAllowedException(BaseAPIException):
     def __init__(self, message: str = "Method not allowed"):
         super().__init__(
             message=message,
-            status_code=405
+            status_code=status.HTTP_405_METHOD_NOT_ALLOWED
         )
